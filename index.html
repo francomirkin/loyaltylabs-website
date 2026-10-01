@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loyalty Labs — A Retail Performance Company</title>
+<meta name="description" content="Loyalty Labs: loyalty mechanics for top chains that boost performance by changing consumer behavior.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Crect width='600' height='600' fill='%230E0E0D'/%3E%3Cg fill='%23F4F3EF'%3E%3Crect x='33' y='57' width='54' height='510'/%3E%3Crect x='33' y='513' width='413' height='54'/%3E%3Crect x='153' y='33' width='414' height='54'/%3E%3Crect x='513' y='33' width='54' height='510'/%3E%3Crect x='258' y='258' width='84' height='84'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0d;
+    --bg-2: #151514;
+    --fg: #f4f3ef;
+    --fg-2: #bdbbb5;
+    --muted: #8a8883;
+    --line: #2a2927;
+    --max: 1280px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: "Space Grotesk", system-ui, sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.5; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 40px; }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+
+  /* Header */
+  header { position: fixed; inset: 0 0 auto; z-index: 10; border-bottom: 1px solid transparent; transition: background .3s, border-color .3s; }
+  header.solid { background: rgba(14,14,13,.85); backdrop-filter: blur(10px); border-color: var(--line); }
+  nav { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 14px; font-weight: 500; letter-spacing: .28em; font-size: 14px; }
+  .brand svg { width: 26px; height: 26px; }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a { color: var(--fg-2); transition: color .2s; }
+  .nav-links a:hover { color: var(--fg); }
+  .btn { display: inline-flex; align-items: center; gap: 12px; border: 1px solid var(--fg); padding: 14px 22px; transition: background .2s, color .2s; }
+  .btn:hover { background: var(--fg); color: var(--bg); }
+  .btn.small { padding: 9px 16px; }
+  .btn .arr { transition: transform .2s; }
+  .btn:hover .arr { transform: translateX(4px); }
+
+  /* Hero */
+  .hero { position: relative; height: 100vh; min-height: 640px; overflow: hidden; }
+  #field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 42% 34% at 50% 50%, rgba(14,14,13,.55) 0%, rgba(14,14,13,.25) 55%, rgba(14,14,13,0) 100%),
+                linear-gradient(0deg, var(--bg) 0%, rgba(14,14,13,0) 16%); }
+  .hero-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; pointer-events: none; }
+  .hero-content a { pointer-events: auto; }
+  .hero h1 { font-weight: 400; font-size: clamp(44px, 6.6vw, 96px); line-height: .98; letter-spacing: -.035em; max-width: 13em; text-shadow: 0 2px 30px rgba(14,14,13,.8); }
+  .hero h1 span { color: var(--muted); }
+  .hero p { color: var(--fg-2); font-size: clamp(16px, 1.4vw, 19px); max-width: 520px; margin: 30px auto 40px; font-weight: 300; text-shadow: 0 1px 16px rgba(14,14,13,.9); }
+  .hero .kicker { color: var(--muted); margin-bottom: 28px; display: flex; gap: 14px; align-items: center; }
+  .hero .kicker::before, .hero .kicker::after { content: ""; width: 28px; height: 1px; background: var(--muted); }
+  .readout { position: absolute; z-index: 2; right: 40px; bottom: 36px; text-align: right; color: var(--muted); display: grid; gap: 6px; }
+  .readout b { color: var(--fg); font-weight: 400; }
+  .readout .bar { display: flex; gap: 4px; justify-content: flex-end; margin-top: 4px; }
+  .readout .bar i { width: 22px; height: 2px; background: var(--line); transition: background .4s; }
+  .readout .bar i.on { background: var(--fg); }
+  .scroll-cue { position: absolute; z-index: 2; left: 40px; bottom: 36px; color: var(--muted); }
+
+  /* Sections */
+  section { border-top: 1px solid var(--line); padding: 120px 0; }
+  .sec-label { display: flex; justify-content: space-between; color: var(--muted); margin-bottom: 64px; }
+  .statement { font-size: clamp(34px, 4.6vw, 64px); font-weight: 400; letter-spacing: -.03em; line-height: 1.05; max-width: 14em; }
+  .statement span { color: var(--muted); }
+
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 80px; border-top: 1px solid var(--line); }
+  .cell { padding: 32px 32px 8px 0; }
+  .cell + .cell { border-left: 1px solid var(--line); padding-left: 32px; }
+  .cell .mono { color: var(--muted); }
+  .cell h3 { font-weight: 500; font-size: 22px; letter-spacing: .12em; margin: 18px 0 10px; }
+  .cell p { color: var(--fg-2); font-weight: 300; max-width: 300px; }
+
+  /* Full-bleed photo band */
+  .photo { position: relative; height: 50vh; min-height: 320px; max-height: 520px; overflow: hidden; border-top: 1px solid var(--line); }
+  .photo img { position: absolute; left: 0; top: -12%; width: 100%; height: 124%; object-fit: cover; object-position: 50% 45%;
+    filter: grayscale(.45) contrast(1.05) brightness(.78); will-change: transform; }
+  .photo::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, var(--bg) 0%, rgba(14,14,13,0) 15%, rgba(14,14,13,0) 45%, rgba(14,14,13,.85) 92%, var(--bg) 100%); }
+  .photo .cap { position: absolute; z-index: 1; left: 0; right: 0; bottom: 40px; }
+  .photo .cap .wrap { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; flex-wrap: wrap; }
+  .photo .cap h2 { font-weight: 400; font-size: clamp(28px, 3.6vw, 48px); letter-spacing: -.03em; line-height: 1.05; max-width: 13em; }
+  .photo .cap h2 span { color: var(--fg-2); }
+  .photo .cap .mono { color: var(--fg-2); }
+
+  .cases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .case { background: var(--bg); padding: 36px 32px 32px; display: grid; gap: 30px; }
+  .case .mono { color: var(--muted); }
+  .case .where { color: var(--fg-2); font-size: 15px; margin-top: 8px; }
+  .case .n { font-size: clamp(54px, 6vw, 84px); font-weight: 300; letter-spacing: -.04em; line-height: 1; }
+  .case .row { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); padding-top: 16px; }
+  .case .row b { font-weight: 500; font-size: 20px; }
+  .note { color: var(--muted); margin-top: 24px; }
+
+  .contact { text-align: left; }
+  .contact .statement { max-width: 12em; margin-bottom: 48px; }
+  .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 80px; border-top: 1px solid var(--line); padding-top: 28px; }
+  .contact-grid .mono { color: var(--muted); display: block; margin-bottom: 10px; }
+  .contact-grid a:hover { color: var(--fg-2); }
+
+  footer { border-top: 1px solid var(--line); padding: 32px 0; color: var(--muted); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .9s ease, transform .9s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 20px; }
+    .nav-links a:not(.btn) { display: none; }
+    .hero::after { background: radial-gradient(ellipse 80% 40% at 50% 50%, rgba(14,14,13,.75) 0%, rgba(14,14,13,0) 100%), linear-gradient(0deg, var(--bg) 0%, rgba(14,14,13,0) 16%); }
+    .hero .kicker::before, .hero .kicker::after { display: none; }
+    .readout { right: 20px; bottom: 24px; }
+    .scroll-cue { display: none; }
+    section { padding: 80px 0; }
+    .grid3, .cases, .contact-grid { grid-template-columns: 1fr; }
+    .cell, .cell + .cell { border-left: 0; padding: 28px 0; border-bottom: 1px solid var(--line); }
+  }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <nav class="wrap">
+    <a href="#" class="brand" aria-label="Loyalty Labs home">
+      <svg viewBox="0 0 600 600" aria-hidden="true"><g fill="#F4F3EF"><rect x="33" y="57" width="54" height="510"/><rect x="33" y="513" width="413" height="54"/><rect x="153" y="33" width="414" height="54"/><rect x="513" y="33" width="54" height="510"/><rect x="258" y="258" width="84" height="84"/></g></svg>
+      LOYALTY LABS
+    </a>
+    <div class="nav-links mono">
+      <a href="#what">What we do</a>
+      <a href="#results">Results</a>
+      <a href="#contact" class="btn small">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="hero">
+    <canvas id="field" aria-hidden="true"></canvas>
+    <div class="wrap hero-content">
+      <div class="mono kicker">A retail performance company · New York</div>
+      <h1>Driving retail growth.</h1>
+      <p>Loyalty mechanics for top chains that boost performance by changing consumer behavior.</p>
+      <div><a href="#contact" class="btn mono">Talk to us <span class="arr">→</span></a></div>
+    </div>
+    <div class="readout mono" aria-hidden="true">
+      <div>FIG. <b id="figNum">01</b> — <b id="figName">Shopper signal</b></div>
+      <div id="figMeta">11,760 data points</div>
+      <div class="bar"><i class="on"></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="scroll-cue mono">Scroll ↓</div>
+  </div>
+
+  <section id="what">
+    <div class="wrap">
+      <div class="sec-label mono reveal"><span>01 — What we do</span><span>Design · Run · Measure</span></div>
+      <h2 class="statement reveal">The campaign is the tool. <span>The measured result is the product.</span></h2>
+      <div class="grid3 reveal">
+        <div class="cell"><span class="mono">01</span><h3>DESIGN</h3><p>Find the shoppers worth moving and engineer the mechanics.</p></div>
+        <div class="cell"><span class="mono">02</span><h3>RUN</h3><p>Operate the full campaign, from rewards to redemptions.</p></div>
+        <div class="cell"><span class="mono">03</span><h3>MEASURE</h3><p>Get measured reports and full control over your campaign, week by week.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="photo" aria-label="A shopper walking through a supermarket aisle">
+    <picture>
+      <source media="(max-width: 900px)" srcset="assets/aisle-1200.jpg">
+      <img src="assets/aisle-2400.jpg" alt="A shopper walking through a supermarket aisle" loading="lazy" id="photoImg">
+    </picture>
+    <div class="cap">
+      <div class="wrap">
+        <h2 class="reveal">Small changes in shopper habits <span>move the whole P&amp;L.</span></h2>
+        <div class="mono reveal">In store · Week over week</div>
+      </div>
+    </div>
+  </div>
+
+  <section id="results">
+    <div class="wrap">
+      <div class="sec-label mono reveal"><span>02 — Track record</span><span>Same weeks, prior year</span></div>
+      <div class="cases reveal">
+        <div class="case">
+          <div><div class="mono">Case 01</div><div class="where">Supermarket chain · South America</div></div>
+          <div class="n" data-count="8.1">+0.0%</div>
+          <div class="row"><span class="mono">Sales lift</span></div>
+          <div class="row"><span class="mono">Prizes redeemed</span><b>+323,000</b></div>
+        </div>
+        <div class="case">
+          <div><div class="mono">Case 02</div><div class="where">Drugstore chain · South America</div></div>
+          <div class="n" data-count="7.9">+0.0%</div>
+          <div class="row"><span class="mono">Sales lift</span></div>
+          <div class="row"><span class="mono">Prizes redeemed</span><b>+629,000</b></div>
+        </div>
+        <div class="case">
+          <div><div class="mono">Case 03</div><div class="where">Gas station chain · South America</div></div>
+          <div class="n" data-count="8.2">+0.0%</div>
+          <div class="row"><span class="mono">Sales lift</span></div>
+          <div class="row"><span class="mono">Prizes redeemed</span><b>+100,000</b></div>
+        </div>
+      </div>
+      <p class="mono note reveal">Campaigns our team has designed and run.</p>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="wrap">
+      <div class="sec-label mono reveal"><span>03 — Contact</span><span>New York, NY</span></div>
+      <h2 class="statement reveal">Let’s power results that shape the future of retail.</h2>
+      <a href="mailto:support@loyaltylabshq.com" class="btn mono reveal">Start a conversation <span class="arr">→</span></a>
+      <div class="contact-grid reveal">
+        <div><span class="mono">Email</span><a href="mailto:support@loyaltylabshq.com">support@loyaltylabshq.com</a></div>
+        <div><span class="mono">Office</span>New York, NY, U.S.A.</div>
+        <div><span class="mono">Web</span>loyaltylabshq.com</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap mono"><span>© 2026 Loyalty Labs</span><span>A retail performance company</span></div>
+</footer>
+
+<script>
+(() => {
+  /* ---------- Dot field: wave → store layout → cart ---------- */
+  const canvas = document.getElementById('field');
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const GX = 140, GZ = 84, N = GX * GZ;
+  const rand = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+
+  // Distribute n points along 3D segments, proportional to length
+  function sampleSegments(segs, n) {
+    const lens = segs.map(([a, b]) => Math.hypot(b[0]-a[0], b[1]-a[1], b[2]-a[2]));
+    const total = lens.reduce((x, y) => x + y, 0);
+    const out = new Float32Array(n * 3);
+    let k = 0;
+    segs.forEach(([a, b], i) => {
+      const c = i === segs.length - 1 ? n - k : Math.round(n * lens[i] / total);
+      for (let j = 0; j < c && k < n; j++, k++) {
+        const t = (j + 0.5) / c;
+        out[k*3] = a[0] + (b[0]-a[0])*t; out[k*3+1] = a[1] + (b[1]-a[1])*t; out[k*3+2] = a[2] + (b[2]-a[2])*t;
+      }
+    });
+    for (; k < n; k++) { const s = segs[k % segs.length][0]; out.set(s, k*3); }
+    return shuffle(out, n);
+  }
+  function shuffle(arr, n) {
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      for (let d = 0; d < 3; d++) { const t = arr[i*3+d]; arr[i*3+d] = arr[j*3+d]; arr[j*3+d] = t; }
+    }
+    return arr;
+  }
+  const box = (x0, x1, y0, y1, z0, z1, levels = [y0, y1]) => {
+    const s = [];
+    levels.forEach(y => s.push(
+      [[x0,y,z0],[x1,y,z0]], [[x1,y,z0],[x1,y,z1]], [[x1,y,z1],[x0,y,z1]], [[x0,y,z1],[x0,y,z0]]));
+    [[x0,z0],[x1,z0],[x1,z1],[x0,z1]].forEach(([x,z]) => s.push([[x,y0,z],[x,y1,z]]));
+    return s;
+  };
+
+  // Shape 2: supermarket floor plan in 3D (aisles, perimeter shelving, checkouts)
+  function storeShape() {
+    const segs = [], H = 0.32, sh = [0, 0.11, 0.22, H];
+    for (let i = 0; i < 6; i++) {               // aisles
+      const x = -0.95 + i * 0.38;
+      segs.push(...box(x - 0.06, x + 0.06, 0, H, -0.55, 0.65, sh));
+    }
+    segs.push(...box(-1.35, 1.35, 0, 0.4, 0.9, 1.0, [0, 0.13, 0.26, 0.4]));   // back wall
+    segs.push(...box(-1.35, -1.25, 0, 0.4, -0.6, 0.9, [0, 0.2, 0.4]));       // left wall
+    segs.push(...box(1.25, 1.35, 0, 0.4, -0.6, 0.9, [0, 0.2, 0.4]));         // right wall
+    for (let i = 0; i < 5; i++) {               // checkouts
+      const x = -0.9 + i * 0.36;
+      segs.push(...box(x, x + 0.18, 0, 0.12, -1.0, -0.82));
+    }
+    const nLines = Math.floor(N * 0.78);
+    const lines = sampleSegments(segs, nLines);
+    const out = new Float32Array(N * 3);
+    out.set(lines);
+    for (let k = nLines; k < N; k++) {          // floor grid
+      const gx = Math.floor(rand() * 54), gz = Math.floor(rand() * 44);
+      out[k*3] = -1.35 + gx * 0.05; out[k*3+1] = 0; out[k*3+2] = -1.15 + gz * 0.05;
+    }
+    for (let k = 0; k < N; k++) out[k*3+1] -= 0.15;
+    return out;
+  }
+
+  // Shape 3: shopping cart wireframe
+  function cartShape() {
+    const segs = [];
+    const top = { y: 0.62, x0: -0.62, x1: 0.62, z: 0.36 };
+    const bot = { y: 0.18, x0: -0.48, x1: 0.5, z: 0.28 };
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const ring = (t) => {
+      const y = lerp(bot.y, top.y, t), x0 = lerp(bot.x0, top.x0, t), x1 = lerp(bot.x1, top.x1, t), z = lerp(bot.z, top.z, t);
+      return [[[x0,y,-z],[x1,y,-z]], [[x1,y,-z],[x1,y,z]], [[x1,y,z],[x0,y,z]], [[x0,y,z],[x0,y,-z]]];
+    };
+    for (let i = 0; i <= 5; i++) segs.push(...ring(i / 5));
+    for (let i = 0; i <= 12; i++) {              // side ribs
+      const t = i / 12;
+      [-1, 1].forEach(s => segs.push([[lerp(bot.x0, bot.x1, t), bot.y, s*bot.z], [lerp(top.x0, top.x1, t), top.y, s*top.z]]));
+    }
+    for (let i = 0; i <= 6; i++) {              // front/back ribs
+      const t = i / 6;
+      segs.push([[bot.x1, bot.y, lerp(-bot.z, bot.z, t)], [top.x1, top.y, lerp(-top.z, top.z, t)]]);
+      segs.push([[bot.x0, bot.y, lerp(-bot.z, bot.z, t)], [top.x0, top.y, lerp(-top.z, top.z, t)]]);
+    }
+    for (let i = 0; i <= 8; i++) {              // basket floor
+      const x = lerp(bot.x0, bot.x1, i / 8);
+      segs.push([[x, bot.y, -bot.z], [x, bot.y, bot.z]]);
+    }
+    [-1, 1].forEach(s => {                      // handle + frame + wheels
+      segs.push([[top.x0, top.y, s*top.z], [-0.84, 0.82, s*0.34]]);
+      segs.push([[-0.5, 0.16, s*0.28], [-0.52, -0.28, s*0.3]]);
+      segs.push([[0.48, 0.16, s*0.28], [0.5, -0.28, s*0.3]]);
+      segs.push([[-0.52, -0.28, s*0.3], [0.5, -0.28, s*0.3]]);
+      segs.push([[-0.5, -0.06, s*0.29], [0.49, -0.06, s*0.29]]);
+      [-0.48, 0.46].forEach(cx => {
+        for (let a = 0; a < 12; a++) {
+          const a0 = a / 12 * Math.PI * 2, a1 = (a + 1) / 12 * Math.PI * 2, r = 0.065, cy = -0.36;
+          segs.push([[cx + Math.cos(a0)*r, cy + Math.sin(a0)*r, s*0.3], [cx + Math.cos(a1)*r, cy + Math.sin(a1)*r, s*0.3]]);
+        }
+      });
+    });
+    segs.push([[-0.84, 0.82, -0.34], [-0.84, 0.82, 0.34]]);
+    segs.push([[-0.84, 0.82, -0.34], [-0.84, 0.82, 0.34]]);
+    for (let i = 0; i <= 6; i++) {              // lower tray
+      const x = lerp(-0.5, 0.49, i / 6);
+      segs.push([[x, -0.06, -0.29], [x, -0.06, 0.29]]);
+    }
+    return sampleSegments(segs, N);
+  }
+
+  // Shape 3: inside a supermarket, shopper's eye view down an aisle
+  function aisleShape() {
+    const segs = [], L = 7.5, X = 0.55, floor = -0.5, levels = [-0.5, -0.28, -0.06, 0.16, 0.38];
+    [-1, 1].forEach(s => {
+      levels.forEach(y => segs.push([[s*X, y, 0], [s*X, y, L]]));                 // shelf edges
+      segs.push([[s*X, 0.52, 0], [s*X, 0.52, L]]);                                 // shelf tops
+      for (let z = 0; z <= L; z += 0.9) segs.push([[s*X, floor, z], [s*X, 0.52, z]]); // uprights
+      levels.slice(0, -1).forEach(y => {                                           // products
+        for (let z = 0.05; z < L; z += 0.11) {
+          const hgt = 0.08 + ((z * 37 + y * 11) % 1) * 0.1;
+          segs.push([[s*(X+0.02), y + 0.02, z], [s*(X+0.02), y + 0.02 + hgt, z]]);
+        }
+      });
+    });
+    for (let x = -0.4; x <= 0.41; x += 0.2) segs.push([[x, floor, 0], [x, floor, L]]);    // floor tiles
+    for (let z = 0; z <= L; z += 0.4) segs.push([[-X, floor, z], [X, floor, z]]);
+    for (let z = 0.4; z < L; z += 1.1) segs.push([[0, 0.85, z], [0, 0.85, z + 0.6]]);      // ceiling lights
+    [2.2, 5.2].forEach(z => segs.push(...box(-0.28, 0.28, 0.62, 0.76, z, z + 0.01)));      // aisle signs
+    for (let y = floor; y <= 0.52; y += 0.11) segs.push([[-1.2, y, L], [1.2, y, L]]);      // back wall
+    return sampleSegments(segs, N);
+  }
+
+  // Shape 1: wave surface, animated (as on the deck's cover)
+  const wave = new Float32Array(N * 3);
+  function updateWave(t) {
+    for (let i = 0; i < GX; i++) for (let j = 0; j < GZ; j++) {
+      const k = (i * GZ + j) * 3, x = -3.4 + i / (GX - 1) * 6.8, z = -2.6 + j / (GZ - 1) * 6.2;
+      wave[k] = x; wave[k+2] = z;
+      wave[k+1] = -0.25 + 0.3 * Math.sin(x * 1.3 + t * 0.6) * Math.cos(z * 1.3 - t * 0.4)
+                + 0.12 * Math.sin(x * 2.4 - z * 1.8 + t * 0.9);
+    }
+    return wave;
+  }
+
+  const still = s => () => s;
+  const shapes = [
+    { name: 'Shopper signal', meta: '11,760 data points',            get: updateWave,             cam: { yaw: -0.2, pitch: 0.82, dist: 2.3, yawAmp: 0.12 } },
+    { name: 'Store layout',   meta: '6 aisles · 5 lanes · 1 floor', get: still(storeShape()),    cam: { yaw: -0.35, pitch: 0.5, dist: 2.7, yawAmp: 0.45 } },
+    { name: 'Aisle view',     meta: 'Shopper eye level · 1.6 m',    get: still(aisleShape()),    cam: { yaw: 0,     pitch: 0.04, dist: 0.2, yawAmp: 0.07 } },
+    { name: 'Basket',         meta: 'Every redemption, counted',    get: still(cartShape()),     cam: { yaw: -0.35, pitch: 0.2, dist: 2.5, yawAmp: 0.6 } },
+  ];
+  const delay = new Float32Array(N).map(() => rand() * 0.45);
+  // Diffusion: most dots hold the figure tightly, the rest drift loosely around it and fade into the background
+  const scat = new Float32Array(N), ph1 = new Float32Array(N), ph2 = new Float32Array(N);
+  for (let i = 0; i < N; i++) {
+    scat[i] = rand() < 0.8 ? rand() * 0.008 : 0.03 + Math.pow(rand(), 2.2) * 0.5;
+    ph1[i] = rand() * 6.28; ph2[i] = rand() * 6.28;
+  }
+  const HOLD = 6.5, MORPH = 2.8;
+
+  // Ambient layer: drifting dots that cover the whole hero and never join a shape
+  let amb = { n: 0 };
+  function buildAmbient() {
+    const n = Math.min(4200, Math.round(w * h / 480));
+    amb = { n, x: new Float32Array(n), y: new Float32Array(n), ph: new Float32Array(n), a: new Float32Array(n) };
+    for (let i = 0; i < n; i++) { amb.x[i] = Math.random() * w; amb.y[i] = Math.random() * h; amb.ph[i] = Math.random() * 6.28; amb.a[i] = 0.1 + Math.pow(Math.random(), 1.6) * 0.5; }
+    ambOff = new Float32Array(n * 2);
+  }
+
+  // Pointer: dots are pushed away from the cursor and ease back
+  const mouse = { x: -1e4, y: -1e4 };
+  const R = 130;
+  const shapeOff = new Float32Array(N * 2);
+  let ambOff = new Float32Array(0);
+  const setPointer = e => { const r = canvas.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; };
+  addEventListener('pointermove', setPointer, { passive: true });
+  addEventListener('pointerdown', setPointer, { passive: true });
+  document.addEventListener('pointerleave', () => { mouse.x = mouse.y = -1e4; });
+  addEventListener('blur', () => { mouse.x = mouse.y = -1e4; });
+
+  // Returns brightness boost; updates the dot's eased offset in off[j], off[j+1]
+  function repel(off, j, px, py) {
+    const dx = px - mouse.x, dy = py - mouse.y, d2 = dx*dx + dy*dy;
+    let tx = 0, ty = 0, boost = 0;
+    if (d2 < R * R) {
+      const d = Math.sqrt(d2) || 1, f = Math.pow(1 - d / R, 2);
+      tx = dx / d * f * 46; ty = dy / d * f * 46; boost = f;
+    }
+    off[j] += (tx - off[j]) * 0.14; off[j+1] += (ty - off[j+1]) * 0.14;
+    return boost;
+  }
+
+  let w, h, dpr;
+  function resize() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    w = canvas.clientWidth; h = canvas.clientHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    buildAmbient();
+  }
+  addEventListener('resize', resize); resize();
+
+  const ease = t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+  const figNum = document.getElementById('figNum'), figName = document.getElementById('figName'),
+        figMeta = document.getElementById('figMeta'), bars = document.querySelectorAll('.readout .bar i');
+  let shown = -1;
+
+  function frame(now) {
+    const t = reduce ? 0 : now / 1000;
+    const cycle = HOLD + MORPH, total = cycle * shapes.length;
+    const tc = t % total, idx = Math.floor(tc / cycle), local = tc - idx * cycle;
+    const a = shapes[idx], b = shapes[(idx + 1) % shapes.length];
+    const m = local < HOLD ? 0 : (local - HOLD) / MORPH;
+    const label = m > 0.5 ? (idx + 1) % shapes.length : idx;
+    if (label !== shown) {
+      shown = label;
+      figNum.textContent = String(label + 1).padStart(2, '0');
+      figName.textContent = shapes[label].name;
+      figMeta.textContent = shapes[label].meta;
+      bars.forEach((el, i) => el.classList.toggle('on', i === label));
+    }
+
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = '#f4f3ef';
+
+    // Ambient drift
+    for (let i = 0; i < amb.n; i++) {
+      let x = amb.x[i], y = amb.y[i];
+      x += 0.12 + Math.sin(y * 0.006 + t * 0.25 + amb.ph[i]) * 0.18;
+      y += Math.cos(x * 0.005 + t * 0.2) * 0.14;
+      if (x > w + 5) x = -5; if (x < -5) x = w + 5; if (y > h + 5) y = -5; if (y < -5) y = h + 5;
+      amb.x[i] = x; amb.y[i] = y;
+      const boost = repel(ambOff, i*2, x, y);
+      ctx.globalAlpha = Math.min(amb.a[i] * (0.75 + 0.25 * Math.sin(t * 1.3 + amb.ph[i])) + boost * 0.6, 1);
+      const r = 1 + boost;
+      ctx.fillRect(x + ambOff[i*2] - r/2, y + ambOff[i*2+1] - r/2, r, r);
+    }
+
+    // Shape layer
+    const pa = a.get(t), pb = m > 0 ? b.get(t) : pa;
+    const cm = ease(m), mix = (k) => a.cam[k] + (b.cam[k] - a.cam[k]) * cm;
+    const pitch = mix('pitch'), dist = mix('dist'), amp = mix('yawAmp');
+    const yaw = mix('yaw') + Math.sin(t * 0.12) * amp;
+    const cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+    const mobile = w < 900;
+    const ox = w * 0.5, oy = h * 0.52;
+    const f = mobile ? w * 1.15 : Math.min(w * 0.55, h * 1.05);
+
+    for (let i = 0; i < N; i++) {
+      const k = i * 3;
+      let p = m > 0 ? Math.min(Math.max((m - delay[i]) / 0.55, 0), 1) : 0;
+      p = ease(p);
+      let x = pa[k] + (pb[k] - pa[k]) * p, z = pa[k+2] + (pb[k+2] - pa[k+2]) * p;
+      let y = pa[k+1] + (pb[k+1] - pa[k+1]) * p;
+      if (p > 0 && p < 1) y += Math.sin(p * Math.PI) * 0.12 * (delay[i] - 0.22);
+      const sc = scat[i];
+      x += sc * Math.sin(t * 0.31 + ph1[i]);
+      y += sc * 0.8 * Math.cos(t * 0.27 + ph2[i]);
+      z += sc * Math.sin(t * 0.22 + ph1[i] + ph2[i]);
+      const x1 = x * cy - z * sy, z1 = x * sy + z * cy;
+      const y2 = y * cp - z1 * sp, z2 = y * sp + z1 * cp + dist;
+      if (z2 < 0.25) continue;
+      const s = f / z2, px = ox + x1 * s, py = oy - y2 * s;
+      if (px < -60 || px > w + 60 || py < -60 || py > h + 60) continue;
+      const depth = Math.min(Math.max((5 - z2) / 3, 0.08), 1);
+      const boost = repel(shapeOff, i*2, px, py);
+      const fade = 1 - Math.min(sc * 1.5, 0.72);
+      ctx.globalAlpha = Math.min((0.28 + depth * 0.72) * fade + boost * 0.5, 1);
+      const r = 0.6 + depth * 0.9 + boost;
+      ctx.fillRect(px + shapeOff[i*2] - r/2, py + shapeOff[i*2+1] - r/2, r, r);
+    }
+    ctx.globalAlpha = 1;
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  /* ---------- Photo parallax ---------- */
+  const photoImg = document.getElementById('photoImg');
+  if (!reduce && photoImg) {
+    const band = photoImg.closest('.photo');
+    const onScroll = () => {
+      const r = band.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      const p = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;   // -1..1 across the viewport
+      photoImg.style.transform = `translateY(${(-p * 8).toFixed(2)}%)`;
+    };
+    addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  }
+
+  /* ---------- Header + reveals + counters ---------- */
+  const hdr = document.getElementById('hdr');
+  addEventListener('scroll', () => hdr.classList.toggle('solid', scrollY > 40), { passive: true });
+
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    e.target.querySelectorAll('[data-count]').forEach(el => {
+      const end = +el.dataset.count, t0 = performance.now();
+      const tick = n => { const p = Math.min((n - t0) / 1400, 1);
+        el.textContent = '+' + (end * (1 - Math.pow(1 - p, 3))).toFixed(1) + '%';
+        if (p < 1) requestAnimationFrame(tick); };
+      reduce ? (el.textContent = '+' + end.toFixed(1) + '%') : requestAnimationFrame(tick);
+    });
+    io.unobserve(e.target);
+  }), { threshold: 0.2 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+})();
+</script>
+</body>
+</html>
