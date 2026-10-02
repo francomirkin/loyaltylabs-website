@@ -172,14 +172,14 @@
   <div class="hero">
     <canvas id="field" aria-hidden="true"></canvas>
     <div class="wrap hero-content">
-      <div class="mono kicker">Loyalty Labs · New York</div>
+      <div class="mono kicker">Retail performance company · New York</div>
       <h1>Driving retail growth.</h1>
       <p>Loyalty mechanics for top chains that boost performance by changing consumer behavior.</p>
       <div><a href="#contact" class="btn mono">Talk to us <span class="arr">→</span></a></div>
     </div>
     <div class="readout mono" aria-hidden="true">
-      <div>FIG. <b id="figNum">01</b> — <b id="figName">Shopper signal</b></div>
-      <div id="figMeta">11,760 data points</div>
+      <div>FIG. <b id="figNum">01</b> — <b id="figName">Aisle view</b></div>
+      <div id="figMeta">Shopper eye level · 1.6 m</div>
       <div class="bar"><i class="on"></i><i></i><i></i><i></i></div>
     </div>
     <div class="scroll-cue mono">Scroll ↓</div>
@@ -403,10 +403,10 @@
 
   const still = s => () => s;
   const shapes = [
-    { name: 'Shopper signal', meta: '11,760 data points',            get: updateWave,             cam: { yaw: -0.2, pitch: 0.82, dist: 2.3, yawAmp: 0.12 } },
-    { name: 'Store layout',   meta: '6 aisles · 5 lanes · 1 floor', get: still(storeShape()),    cam: { yaw: -0.35, pitch: 0.5, dist: 2.7, yawAmp: 0.45 } },
     { name: 'Aisle view',     meta: 'Shopper eye level · 1.6 m',    get: still(aisleShape()),    cam: { yaw: 0,     pitch: 0.04, dist: 0.2, yawAmp: 0.07 } },
+    { name: 'Store layout',   meta: '6 aisles · 5 lanes · 1 floor', get: still(storeShape()),    cam: { yaw: -0.35, pitch: 0.5, dist: 2.7, yawAmp: 0.45 } },
     { name: 'Basket',         meta: 'Every redemption, counted',    get: still(cartShape()),     cam: { yaw: -0.35, pitch: 0.2, dist: 2.5, yawAmp: 0.6 } },
+    { name: 'Shopper signal', meta: '11,760 data points',            get: updateWave,             cam: { yaw: -0.2, pitch: 0.82, dist: 2.3, yawAmp: 0.12 } },
   ];
   const delay = new Float32Array(N).map(() => rand() * 0.45);
   // Diffusion: most dots hold the figure tightly, the rest drift loosely around it and fade into the background
