@@ -116,6 +116,21 @@
   .photo .cap h2 span { color: var(--fg-2); }
   .photo .cap .mono { color: var(--fg-2); }
 
+  /* About: full-bleed background video */
+  #about { position: relative; overflow: hidden; min-height: 92vh; display: flex; align-items: flex-end; }
+  #about > .wrap { position: relative; z-index: 2; width: 100%; }
+  .about-video { position: absolute; inset: 0; z-index: 0; background: #000 url('assets/video/poster.jpg') center / cover no-repeat; }
+  .about-video video { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity 1.2s ease; }
+  .about-video video.on { opacity: 1; }
+  .about-video::after { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(14,14,13,.55) 0%, rgba(14,14,13,.2) 75%),
+                linear-gradient(180deg, var(--bg) 0%, rgba(14,14,13,.45) 16%, rgba(14,14,13,.55) 45%, rgba(14,14,13,.9) 78%, var(--bg) 100%); }
+  #about .statement, #about .cell p, #about .cell h3 { text-shadow: 0 1px 18px rgba(14,14,13,.7); }
+  #about .statement span { color: var(--fg-2); }
+  #about .sec-label, #about .cell .mono { color: var(--fg-2); text-shadow: 0 1px 10px rgba(14,14,13,.8); }
+  #about .grid3 { border-top-color: rgba(244,243,239,.18); }
+  #about .cell + .cell { border-left-color: rgba(244,243,239,.18); }
+
   .cases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
   .case { background: var(--bg); padding: 36px 32px 32px; display: grid; gap: 30px; }
   .case .mono { color: var(--muted); }
@@ -238,6 +253,10 @@
   </section>
 
   <section id="about">
+    <div class="about-video" aria-hidden="true">
+      <video id="aboutVideo" muted loop playsinline preload="none" poster="assets/video/poster.jpg"
+        data-src-hd="assets/video/loop-1080.mp4" data-src-sd="assets/video/loop-720.mp4"></video>
+    </div>
     <div class="wrap">
       <div class="sec-label mono reveal"><span>03 — About us</span><span>New York, NY, U.S.A.</span></div>
       <h2 class="statement reveal">A retail performance company, <span>based in New York.</span></h2>
@@ -544,6 +563,25 @@
     if (!reduce) requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+
+  /* ---------- About background video: load near view, play only while visible ---------- */
+  const aboutVideo = document.getElementById('aboutVideo');
+  if (aboutVideo && !reduce) {
+    const saveData = navigator.connection && navigator.connection.saveData;
+    let loaded = false;
+    new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) {
+        if (!loaded) {
+          loaded = true;
+          aboutVideo.src = (innerWidth < 900 || saveData) ? aboutVideo.dataset.srcSd : aboutVideo.dataset.srcHd;
+          aboutVideo.addEventListener('playing', () => aboutVideo.classList.add('on'), { once: true });
+        }
+        aboutVideo.play().catch(() => {});
+      } else if (loaded) {
+        aboutVideo.pause();
+      }
+    }), { rootMargin: '300px 0px' }).observe(aboutVideo);
+  }
 
   /* ---------- Photo parallax ---------- */
   const photoImg = document.getElementById('photoImg');
