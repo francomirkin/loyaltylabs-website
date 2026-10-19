@@ -69,6 +69,15 @@
   .nav-links { display: flex; gap: 36px; align-items: center; }
   .nav-links a { color: var(--fg-2); transition: color .2s; }
   .nav-links a:hover { color: var(--fg); }
+  .menu-btn { display: none; width: 40px; height: 36px; background: none; border: 1px solid var(--line); cursor: pointer; position: relative; }
+  .menu-btn i { position: absolute; left: 11px; right: 11px; height: 1.5px; background: var(--fg); transition: transform .25s, top .25s; }
+  .menu-btn i:first-child { top: 13px; } .menu-btn i:last-child { top: 21px; }
+  header.open .menu-btn i:first-child { top: 17px; transform: rotate(45deg); }
+  header.open .menu-btn i:last-child { top: 17px; transform: rotate(-45deg); }
+  header.open { background: var(--bg); border-color: var(--line); }
+  .mobile-menu { border-top: 1px solid var(--line); padding: 8px 20px 28px; }
+  .mobile-menu a { display: block; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 24px; letter-spacing: -.02em; }
+  .mobile-menu a:last-child { border-bottom: 0; }
   .btn { display: inline-flex; align-items: center; gap: 12px; border: 1px solid var(--fg); padding: 14px 22px; transition: background .2s, color .2s; }
   .btn:hover { background: var(--fg); color: var(--bg); }
   .btn.small { padding: 9px 16px; }
@@ -152,6 +161,7 @@
   .contact-grid a:hover { color: var(--fg-2); }
 
   footer { border-top: 1px solid var(--line); padding: 32px 0; color: var(--muted); }
+  footer a { color: var(--fg-2); transition: color .2s; } footer a:hover { color: var(--fg); }
   footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 
   /* Word-by-word text animation: hero headline rises in on load; section statements light up as you scroll */
@@ -169,6 +179,8 @@
   @media (max-width: 900px) {
     .wrap { padding: 0 20px; }
     .nav-links a:not(.btn) { display: none; }
+    .nav-links { gap: 10px; }
+    .menu-btn { display: block; }
     .hero::after { background: radial-gradient(ellipse 80% 40% at 50% 50%, rgba(14,14,13,.75) 0%, rgba(14,14,13,0) 100%), linear-gradient(0deg, var(--bg) 0%, rgba(14,14,13,0) 16%); }
     .hero .kicker::before, .hero .kicker::after { display: none; }
     .readout { right: 20px; bottom: 24px; }
@@ -196,8 +208,15 @@
       <a href="#results">Track record</a>
       <a href="#about">About</a>
       <a href="#contact" class="btn small">Contact</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu"><i></i><i></i></button>
     </div>
   </nav>
+  <div class="mobile-menu" id="mobileMenu" hidden>
+    <a href="#what">What we do</a>
+    <a href="#results">Track record</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
 </header>
 
 <main>
@@ -237,7 +256,7 @@
     <div class="cap">
       <div class="wrap">
         <h2 class="scrub">Small changes in shopper habits <span class="hl">move the whole P&amp;L.</span></h2>
-        <div class="mono reveal">In store · Week over week</div>
+        <div class="mono reveal">Every visit, measured</div>
       </div>
     </div>
   </div>
@@ -299,7 +318,7 @@
 </main>
 
 <footer>
-  <div class="wrap mono"><span>© 2026 Loyalty Labs · loyaltylabshq.com</span><span>Retail performance company</span></div>
+  <div class="wrap mono"><span>© 2026 Loyalty Labs · loyaltylabshq.com</span><span>Retail performance company · <a href="https://www.linkedin.com/company/loyalty-labs-hq/" target="_blank" rel="noopener">LinkedIn ↗</a></span></div>
 </footer>
 
 <script>
@@ -308,7 +327,8 @@
   const canvas = document.getElementById('field');
   const ctx = canvas.getContext('2d');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const GX = 140, GZ = 84, N = GX * GZ;
+  const small = innerWidth < 900;
+  const GX = small ? 100 : 140, GZ = small ? 60 : 84, N = GX * GZ;
   const rand = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
 
   // Distribute n points along 3D segments, proportional to length
@@ -453,7 +473,7 @@
     { name: 'Aisle view',     meta: 'Shopper eye level · 1.6 m',    get: still(aisleShape()),    cam: { yaw: 0,     pitch: 0.04, dist: 0.2, yawAmp: 0.07 } },
     { name: 'Store layout',   meta: '6 aisles · 5 lanes · 1 floor', get: still(storeShape()),    cam: { yaw: -0.35, pitch: 0.5, dist: 2.7, yawAmp: 0.45 } },
     { name: 'Basket',         meta: 'Every redemption, counted',    get: still(cartShape()),     cam: { yaw: -0.35, pitch: 0.2, dist: 2.5, yawAmp: 0.6 } },
-    { name: 'Shopper signal', meta: '11,760 data points',            get: updateWave,             cam: { yaw: -0.2, pitch: 0.82, dist: 2.3, yawAmp: 0.12 } },
+    { name: 'Shopper signal', meta: `${N.toLocaleString('en-US')} data points`,            get: updateWave,             cam: { yaw: -0.2, pitch: 0.82, dist: 2.3, yawAmp: 0.12 } },
   ];
   const delay = new Float32Array(N).map(() => rand() * 0.45);
   // Diffusion: most dots hold the figure tightly, the rest drift loosely around it and fade into the background
@@ -672,6 +692,17 @@
     addEventListener('resize', onScroll);
     update();
   }
+
+  /* ---------- Mobile menu ---------- */
+  const menuBtn = document.getElementById('menuBtn'), menu = document.getElementById('mobileMenu'), header = document.getElementById('hdr');
+  const setMenu = open => {
+    menu.hidden = !open; header.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', open); menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  };
+  menuBtn.addEventListener('click', () => setMenu(menu.hidden));
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+  addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+  addEventListener('resize', () => { if (innerWidth >= 900) setMenu(false); });
 
   /* ---------- Header + reveals + counters ---------- */
   const hdr = document.getElementById('hdr');
