@@ -84,7 +84,6 @@
   .hero-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; pointer-events: none; }
   .hero-content a { pointer-events: auto; }
   .hero h1 { font-weight: 400; font-size: clamp(44px, 6.6vw, 96px); line-height: .98; letter-spacing: -.035em; max-width: 13em; text-shadow: 0 2px 30px rgba(14,14,13,.8); }
-  .hero h1 span { color: var(--muted); }
   .hero p { color: var(--fg-2); font-size: clamp(16px, 1.4vw, 19px); max-width: 520px; margin: 30px auto 40px; font-weight: 300; text-shadow: 0 1px 16px rgba(14,14,13,.9); }
   .hero .kicker { color: var(--muted); margin-bottom: 28px; display: flex; gap: 14px; align-items: center; }
   .hero .kicker::before, .hero .kicker::after { content: ""; width: 28px; height: 1px; background: var(--muted); }
@@ -99,7 +98,9 @@
   section { border-top: 1px solid var(--line); padding: 120px 0; }
   .sec-label { display: flex; justify-content: space-between; color: var(--muted); margin-bottom: 64px; }
   .statement { font-size: clamp(34px, 4.6vw, 64px); font-weight: 400; letter-spacing: -.03em; line-height: 1.05; max-width: 14em; }
-  .statement span { color: var(--fg); }
+  .statement { color: var(--muted); }
+  .statement .hl, .photo .cap h2 .hl { color: var(--fg); }
+  #about .statement { color: var(--fg-2); }
 
   .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 80px; border-top: 1px solid var(--line); }
   .cell { padding: 32px 32px 8px 0; }
@@ -117,7 +118,7 @@
   .photo .cap { position: absolute; z-index: 1; left: 0; right: 0; bottom: 40px; }
   .photo .cap .wrap { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; flex-wrap: wrap; }
   .photo .cap h2 { font-weight: 400; font-size: clamp(28px, 3.6vw, 48px); letter-spacing: -.03em; line-height: 1.05; max-width: 13em; }
-  .photo .cap h2 span { color: var(--fg); }
+  .photo .cap h2 { color: var(--fg-2); }
   .photo .cap .mono { color: var(--fg-2); }
 
   /* About: full-bleed background video */
@@ -219,7 +220,7 @@
   <section id="what">
     <div class="wrap">
       <div class="sec-label mono reveal"><span>01 — What we do</span><span>Design · Run · Measure</span></div>
-      <h2 class="statement scrub">The campaign is the tool. <span>The measured result is the product.</span></h2>
+      <h2 class="statement scrub">The campaign is the tool. <span class="hl">The measured result is the product.</span></h2>
       <div class="grid3 reveal">
         <div class="cell"><span class="mono">01</span><h3>DESIGN</h3><p>Find the shoppers worth moving and engineer the mechanics.</p></div>
         <div class="cell"><span class="mono">02</span><h3>RUN</h3><p>Operate the full campaign, from rewards to redemptions.</p></div>
@@ -235,7 +236,7 @@
     </picture>
     <div class="cap">
       <div class="wrap">
-        <h2 class="scrub">Small changes in shopper habits <span>move the whole P&amp;L.</span></h2>
+        <h2 class="scrub">Small changes in shopper habits <span class="hl">move the whole P&amp;L.</span></h2>
         <div class="mono reveal">In store · Week over week</div>
       </div>
     </div>
@@ -275,7 +276,7 @@
     </div>
     <div class="wrap">
       <div class="sec-label mono reveal"><span>03 — About us</span><span>Mission · Approach · Clients</span></div>
-      <h2 class="statement scrub">A retail performance company, <span>based in New York.</span></h2>
+      <h2 class="statement scrub">A retail performance company, <span class="hl">based in New York.</span></h2>
       <div class="grid3 reveal">
         <div class="cell"><span class="mono">Our mission</span><h3>OUTSTANDING RESULTS</h3><p>Drive outstanding results for retailers by creating emotion, changing consumer habits and improving profitability, enhancing the shopping experience.</p></div>
         <div class="cell"><span class="mono">Our approach</span><h3>UNMATCHED OFFERS</h3><p>We believe in investing in your top customers, with unmatched offers that power growth and real returns.</p></div>
@@ -287,7 +288,7 @@
   <section id="contact" class="contact">
     <div class="wrap">
       <div class="sec-label mono reveal"><span>04 — Contact</span><span>Email · Office</span></div>
-      <h2 class="statement scrub">Let’s power results that shape the future of retail.</h2>
+      <h2 class="statement scrub"><span class="hl">Let’s power results that shape the future of retail.</span></h2>
       <a href="mailto:support@loyaltylabshq.com" class="btn mono reveal">Start a conversation <span class="arr">→</span></a>
       <div class="contact-grid reveal">
         <div><span class="mono">Email</span><a href="mailto:support@loyaltylabshq.com">support@loyaltylabshq.com</a></div>
