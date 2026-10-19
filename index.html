@@ -99,7 +99,7 @@
   section { border-top: 1px solid var(--line); padding: 120px 0; }
   .sec-label { display: flex; justify-content: space-between; color: var(--muted); margin-bottom: 64px; }
   .statement { font-size: clamp(34px, 4.6vw, 64px); font-weight: 400; letter-spacing: -.03em; line-height: 1.05; max-width: 14em; }
-  .statement span { color: var(--muted); }
+  .statement span { color: var(--fg); }
 
   .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 80px; border-top: 1px solid var(--line); }
   .cell { padding: 32px 32px 8px 0; }
@@ -117,7 +117,7 @@
   .photo .cap { position: absolute; z-index: 1; left: 0; right: 0; bottom: 40px; }
   .photo .cap .wrap { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; flex-wrap: wrap; }
   .photo .cap h2 { font-weight: 400; font-size: clamp(28px, 3.6vw, 48px); letter-spacing: -.03em; line-height: 1.05; max-width: 13em; }
-  .photo .cap h2 span { color: var(--fg-2); }
+  .photo .cap h2 span { color: var(--fg); }
   .photo .cap .mono { color: var(--fg-2); }
 
   /* About: full-bleed background video */
@@ -130,7 +130,6 @@
     background: linear-gradient(90deg, rgba(14,14,13,.55) 0%, rgba(14,14,13,.2) 75%),
                 linear-gradient(180deg, var(--bg) 0%, rgba(14,14,13,.45) 16%, rgba(14,14,13,.55) 45%, rgba(14,14,13,.9) 78%, var(--bg) 100%); }
   #about .statement, #about .cell p, #about .cell h3 { text-shadow: 0 1px 18px rgba(14,14,13,.7); }
-  #about .statement span { color: var(--fg-2); }
   #about .sec-label, #about .cell .mono { color: var(--fg-2); text-shadow: 0 1px 10px rgba(14,14,13,.8); }
   #about .cell p { max-width: 320px; }
   #about .grid3 { border-top-color: rgba(244,243,239,.18); }
@@ -154,6 +153,15 @@
   footer { border-top: 1px solid var(--line); padding: 32px 0; color: var(--muted); }
   footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 
+  /* Word-by-word text animation: hero headline rises in on load; section statements light up as you scroll */
+  .w { display: inline-block; will-change: opacity, transform; }
+  .intro .w { animation: rise .8s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i) * 70ms + 100ms); }
+  .hero .kicker, .hero p, .hero-content > div:last-child { animation: fadeUp 1s ease both; }
+  .hero .kicker { animation-delay: .05s; } .hero p { animation-delay: .55s; } .hero-content > div:last-child { animation-delay: .7s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(.45em); filter: blur(4px); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } }
+  .scrub .w { opacity: .3; transform: translateY(.12em); }
+
   .reveal { opacity: 0; transform: translateY(20px); transition: opacity .9s ease, transform .9s ease; }
   .reveal.in { opacity: 1; transform: none; }
 
@@ -168,7 +176,10 @@
     .grid3, .cases, .contact-grid { grid-template-columns: 1fr; }
     .cell, .cell + .cell { border-left: 0; padding: 28px 0; border-bottom: 1px solid var(--line); }
   }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .scrub .w { opacity: 1; transform: none; transition: none; }
+    .intro .w, .hero .kicker, .hero p, .hero-content > div:last-child { animation: none; }
+  }
 </style>
 </head>
 <body>
@@ -193,7 +204,7 @@
     <canvas id="field" aria-hidden="true"></canvas>
     <div class="wrap hero-content">
       <div class="mono kicker">Retail performance company · New York</div>
-      <h1>Driving retail growth.</h1>
+      <h1 class="intro">Driving retail growth.</h1>
       <p>Loyalty mechanics for top chains that boost performance by changing consumer behavior.</p>
       <div><a href="#contact" class="btn mono">Talk to us <span class="arr">→</span></a></div>
     </div>
@@ -208,7 +219,7 @@
   <section id="what">
     <div class="wrap">
       <div class="sec-label mono reveal"><span>01 — What we do</span><span>Design · Run · Measure</span></div>
-      <h2 class="statement reveal">The campaign is the tool. <span>The measured result is the product.</span></h2>
+      <h2 class="statement scrub">The campaign is the tool. <span>The measured result is the product.</span></h2>
       <div class="grid3 reveal">
         <div class="cell"><span class="mono">01</span><h3>DESIGN</h3><p>Find the shoppers worth moving and engineer the mechanics.</p></div>
         <div class="cell"><span class="mono">02</span><h3>RUN</h3><p>Operate the full campaign, from rewards to redemptions.</p></div>
@@ -224,7 +235,7 @@
     </picture>
     <div class="cap">
       <div class="wrap">
-        <h2 class="reveal">Small changes in shopper habits <span>move the whole P&amp;L.</span></h2>
+        <h2 class="scrub">Small changes in shopper habits <span>move the whole P&amp;L.</span></h2>
         <div class="mono reveal">In store · Week over week</div>
       </div>
     </div>
@@ -264,7 +275,7 @@
     </div>
     <div class="wrap">
       <div class="sec-label mono reveal"><span>03 — About us</span><span>Mission · Approach · Clients</span></div>
-      <h2 class="statement reveal">A retail performance company, <span>based in New York.</span></h2>
+      <h2 class="statement scrub">A retail performance company, <span>based in New York.</span></h2>
       <div class="grid3 reveal">
         <div class="cell"><span class="mono">Our mission</span><h3>OUTSTANDING RESULTS</h3><p>Drive outstanding results for retailers by creating emotion, changing consumer habits and improving profitability, enhancing the shopping experience.</p></div>
         <div class="cell"><span class="mono">Our approach</span><h3>UNMATCHED OFFERS</h3><p>We believe in investing in your top customers, with unmatched offers that power growth and real returns.</p></div>
@@ -276,7 +287,7 @@
   <section id="contact" class="contact">
     <div class="wrap">
       <div class="sec-label mono reveal"><span>04 — Contact</span><span>Email · Office</span></div>
-      <h2 class="statement reveal">Let’s power results that shape the future of retail.</h2>
+      <h2 class="statement scrub">Let’s power results that shape the future of retail.</h2>
       <a href="mailto:support@loyaltylabshq.com" class="btn mono reveal">Start a conversation <span class="arr">→</span></a>
       <div class="contact-grid reveal">
         <div><span class="mono">Email</span><a href="mailto:support@loyaltylabshq.com">support@loyaltylabshq.com</a></div>
@@ -611,6 +622,54 @@
       photoImg.style.transform = `translateY(${(-p * 8).toFixed(2)}%)`;
     };
     addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  }
+
+  /* ---------- Word-by-word text animations ---------- */
+  // Wrap each word in a span, keeping inner elements (e.g. the grey second half) intact
+  function splitWords(el) {
+    const words = [];
+    (function walk(node) {
+      [...node.childNodes].forEach(n => {
+        if (n.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(part => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+            const w = document.createElement('span'); w.className = 'w'; w.textContent = part;
+            frag.appendChild(w); words.push(w);
+          });
+          n.replaceWith(frag);
+        } else if (n.nodeType === 1) walk(n);
+      });
+    })(el);
+    return words;
+  }
+  if (!reduce) {
+    document.querySelectorAll('.intro').forEach(el => splitWords(el).forEach((w, i) => w.style.setProperty('--i', i)));
+    const scrubs = [...document.querySelectorAll('.scrub')].map(el => ({ el, words: splitWords(el) }));
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const vh = innerHeight, K = 3;
+      const maxScroll = document.documentElement.scrollHeight - vh;
+      scrubs.forEach(({ el, words }) => {
+        const top = el.getBoundingClientRect().top;
+        // phrases near the bottom of the page can't scroll far up: finish by the time scrolling ends
+        const lowestTop = top - (maxScroll - scrollY);
+        const end = Math.max(vh * 0.7, lowestTop), start = Math.min(vh * 1.0, end + vh * 0.3);
+        const p = Math.min(Math.max((start - top) / (start - end), 0), 1);   // 0..1 as the phrase moves up the screen
+        const n = words.length;
+        words.forEach((w, i) => {
+          const wp = Math.min(Math.max(p * (n + K) - i, 0), K) / K;          // each word ramps over K word-steps
+          w.style.opacity = (0.3 + 0.7 * wp).toFixed(3);
+          w.style.transform = `translateY(${((1 - wp) * 0.12).toFixed(3)}em)`;
+        });
+      });
+    };
+    const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll);
+    update();
   }
 
   /* ---------- Header + reveals + counters ---------- */
