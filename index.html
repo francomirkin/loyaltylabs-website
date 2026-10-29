@@ -153,6 +153,12 @@
   .case .row { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--line); padding-top: 16px; }
   .case .row b { font-weight: 500; font-size: 20px; }
   .note { color: var(--muted); margin-top: 24px; }
+  a.case { transition: background .25s; }
+  a.case:hover { background: #151514; }
+  .case .row.more { color: var(--fg-2); }
+  .case .row.more .mono { color: var(--fg-2); }
+  .case .row.more .arr { transition: transform .2s; }
+  a.case:hover .row.more .arr { transform: translateX(4px); }
 
   .contact { text-align: left; }
   .contact .statement { max-width: 12em; margin-bottom: 48px; }
@@ -263,26 +269,29 @@
 
   <section id="results">
     <div class="wrap">
-      <div class="sec-label mono reveal"><span>02 — Track record</span><span>Same weeks, prior year</span></div>
+      <div class="sec-label mono reveal"><span>02 — Track record</span><span>Selected campaigns</span></div>
       <div class="cases reveal">
-        <div class="case">
+        <a class="case" href="/cases/food-retailer/">
           <div><div class="mono">Case 01</div><div class="where">Food retailer</div></div>
           <div class="n" data-count="8.1">+8.1%</div>
-          <div class="row"><span class="mono">Sales lift</span></div>
-          <div class="row"><span class="mono">Prizes redeemed</span><b>+323,000</b></div>
-        </div>
-        <div class="case">
+          <div class="row"><span class="mono">Total sales</span></div>
+          <div class="row"><span class="mono">Prizes redeemed</span><b>323,000</b></div>
+          <div class="row more"><span class="mono">Read the case</span><span class="arr">→</span></div>
+        </a>
+        <a class="case" href="/cases/health-beauty/">
           <div><div class="mono">Case 02</div><div class="where">Health &amp; beauty chain</div></div>
           <div class="n" data-count="7.9">+7.9%</div>
-          <div class="row"><span class="mono">Sales lift</span></div>
-          <div class="row"><span class="mono">Prizes redeemed</span><b>+629,000</b></div>
-        </div>
-        <div class="case">
+          <div class="row"><span class="mono">Total sales</span></div>
+          <div class="row"><span class="mono">Prizes redeemed</span><b>629,000</b></div>
+          <div class="row more"><span class="mono">Read the case</span><span class="arr">→</span></div>
+        </a>
+        <a class="case" href="/cases/fuel-retailer/">
           <div><div class="mono">Case 03</div><div class="where">Fuel retailer</div></div>
           <div class="n" data-count="8.2">+8.2%</div>
-          <div class="row"><span class="mono">Sales lift</span></div>
-          <div class="row"><span class="mono">Prizes redeemed</span><b>+100,000</b></div>
-        </div>
+          <div class="row"><span class="mono">Fuel sales</span></div>
+          <div class="row"><span class="mono">Rewards redeemed</span><b>100,000+</b></div>
+          <div class="row more"><span class="mono">Read the case</span><span class="arr">→</span></div>
+        </a>
       </div>
       <p class="mono note reveal">Campaigns our team has designed and run.</p>
     </div>
